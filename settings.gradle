@@ -1,0 +1,5 @@
+rootProject.name = 'jargoncentralroot'
+include 'api'
+include 'core'
+include 'common'
+
