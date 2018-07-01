@@ -1,27 +1,26 @@
 package com.jargoncentral.core.model;
 
-import com.jargoncentral.core.enums.Role;
+import com.jargoncentral.common.entity.AuthorEntity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name="authors_author")
 @Data
-public class Author {
+@AttributeOverride(name = "profilePic", column = @Column(name = "profil_pic"))
+public class Author extends AuthorEntity {
 
     public static final String TABLE_NAME = "authors_author";
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    private Role role;
+
     @Column(name = "profil_pic")
     private String profilePic;
-    private Date createdAt;
-    private Date updatedAt;
 
     @OneToOne(fetch = FetchType.EAGER)
     private User user;
 }
+

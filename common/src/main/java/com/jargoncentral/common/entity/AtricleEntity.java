@@ -8,15 +8,11 @@ import java.util.Date;
 
 @Data
 @MappedSuperclass
-public abstract class AtricleEntity {
+public abstract class AtricleEntity extends AbstractEntity{
 
-    @Transient
-    protected Integer Id;
     protected String title;
     protected Integer status;
     protected String slug;
     protected Long views;
     protected BigDecimal rating;
-    protected Date createdAt;
-    protected Date updatedAt;
 }

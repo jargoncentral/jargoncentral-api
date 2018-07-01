@@ -1,11 +1,15 @@
 package com.jargoncentral.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jargoncentral.common.entity.AtricleEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -19,19 +23,13 @@ public class Article extends AtricleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
-    private String title;
-//    private Integer status;
-//    private String slug;
-//    private Long views;
-//    private BigDecimal rating;
-//    private Date createdAt;
-//    private Date updatedAt;
-
-//    @OneToMany(fetch = FetchType.LAZY)
-//    private Set<Content> contents = new HashSet<>();
-
-    public void hell(){
-        System.out.print(this.title);
-    }
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "articles_article_tags",
+            joinColumns = { @JoinColumn(name = "article_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+    )
+    private Set<Tag> tags;
 
 }

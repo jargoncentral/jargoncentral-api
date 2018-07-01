@@ -8,9 +8,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer>{
-//    @Query("SELECT a FROM Article a WHERE UPPER(a.title) LIKE CONCAT('%',UPPER(:title),'%')")
-//    List<Article> searchByTitle(@Param("title") String title);
+    @Query("SELECT a FROM Article a WHERE UPPER(a.title) LIKE CONCAT('%',UPPER(:title),'%')")
+    Set<Article> searchByTitle(@Param("title") String title);
+
+    Optional<Article> findBySlugEquals(String slug);
+
+//    @Query("SELECT a FROM Article a ORDER BY rating DESC")
+//    Set<Article> orderArticlesByRating();
+
+    Set<Article> findTop10ByOrderByRatingDesc();
 }

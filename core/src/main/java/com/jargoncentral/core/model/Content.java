@@ -1,39 +1,29 @@
 package com.jargoncentral.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jargoncentral.common.entity.ContentEntity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name="articles_content")
 @Data
-public class Content {
+public class Content extends ContentEntity {
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    private String body;
-    private Integer status;
-    private Date createdAt;
-    private Date updatedAt;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Article article;
 
     @OneToOne(fetch = FetchType.EAGER)
     private Author author;
 
-
-    @Override
-    public String toString() {
-        return "Content{" +
-                "Id=" + Id +
-                ", body='" + body + '\'' +
-                ", status=" + status +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", article=" + article +
-                '}';
-    }
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="content_id")
+    private Set<ContentMeta> metas;
 }
