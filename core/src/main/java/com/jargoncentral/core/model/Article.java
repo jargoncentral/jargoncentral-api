@@ -15,6 +15,13 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name="articles_article")
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "Article.fullTextSearch",
+                query = "SELECT * FROM articles_article WHERE title @@ to_tsquery(:query)",
+                resultClass = Article.class
+        )
+})
 public class Article extends AtricleEntity {
 
     public static final String TABLE_NAME = "articles_article";

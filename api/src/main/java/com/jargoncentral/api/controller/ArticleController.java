@@ -4,8 +4,6 @@ import com.jargoncentral.api.model.Response;
 import com.jargoncentral.common.enums.ContentStatus;
 import com.jargoncentral.common.util.HTTPRequestUtil;
 import com.jargoncentral.core.model.*;
-import com.jargoncentral.core.repository.AuthorRepository;
-import com.jargoncentral.core.repository.ContentRepository;
 import com.jargoncentral.core.service.ArticleService;
 import com.jargoncentral.core.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/articles")
@@ -31,8 +28,16 @@ public class ArticleController implements APIController {
     }
 
     @RequestMapping("/top")
-    public Response topList() {
-        Set<Article> results = articleService.getTopList();
+    public Response topViews() {
+        Set<Article> results = articleService.getTopListByViews();
+        HashMap<String, Object> set = new HashMap();
+        set.put("articles", results);
+        return new Response(200, set);
+    }
+
+    @RequestMapping("/suggestion")
+    public Response suggestions() {
+        Set<Article> results = articleService.getByTopTags();
         HashMap<String, Object> set = new HashMap();
         set.put("articles", results);
         return new Response(200, set);
@@ -40,7 +45,7 @@ public class ArticleController implements APIController {
 
     @RequestMapping("/search/{query}")
     public Response search(@PathVariable String query) {
-        Set<Article> results = articleService.searchArticle(query);
+        List<Article> results = articleService.search(query);
         HashMap<String, Object> set = new HashMap();
         set.put("articles", results);
         return new Response(200, set);
@@ -60,9 +65,25 @@ public class ArticleController implements APIController {
     }
 
     @RequestMapping("/{id}/history")
-    public Response getHistory(@PathVariable Integer id) {
+    public Response history(@PathVariable Integer id) {
         Optional<Article> article = articleService.getById(id);
         return getArticleResponse(article, ContentStatus.HISTORY);
+    }
+
+    @RequestMapping("/{id}/related")
+    public Response related(@PathVariable Integer id){
+        Set<Article> results = articleService.getRelated(id);
+        HashMap<String, Object> set = new HashMap();
+        set.put("articles", results);
+        return new Response(200, set);
+    }
+
+    @RequestMapping("/{id}/network")
+    public Response network(@PathVariable Integer id){
+        HashMap<Article, HashMap> tree = articleService.getNetwork(id);
+        HashMap<String, Object> set = new HashMap();
+        set.put("articles", tree);
+        return new Response(200, set);
     }
 
 //region Private
@@ -72,9 +93,12 @@ public class ArticleController implements APIController {
             HashMap<String, Object> set = new HashMap();
             set.put("article", article.get());
 
+            if (status == ContentStatus.CURRENT) {
             Optional<Content> content = contentService.getContent(article.get(), status);
-            if (content.isPresent()){
                 set.put("body", content);
+            } else {
+                List<Content> contents = contentService.getHistoryContent(article.get(), status);
+                set.put("body", contents);
             }
 
             set.put("tags", article.get().getTags());

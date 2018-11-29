@@ -1,5 +1,7 @@
 package com.jargoncentral.common.entity;
 
+import com.jargoncentral.common.enums.Preference;
+import com.jargoncentral.common.enums.Source;
 import lombok.Data;
 
 import javax.persistence.MappedSuperclass;
@@ -8,6 +10,6 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class UserTagEntity extends AbstractEntity{
 
-    protected Integer preference;
-    protected Integer source;
+    protected Preference preference;
+    protected Source source;
 }

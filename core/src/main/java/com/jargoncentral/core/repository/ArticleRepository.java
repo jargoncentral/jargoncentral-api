@@ -1,11 +1,13 @@
 package com.jargoncentral.core.repository;
 
 import com.jargoncentral.core.model.Article;
+import com.jargoncentral.core.model.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NamedNativeQuery;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,4 +23,8 @@ public interface ArticleRepository extends JpaRepository<Article, Integer>{
 //    Set<Article> orderArticlesByRating();
 
     Set<Article> findTop10ByOrderByRatingDesc();
+
+    Set<Article> findTop10ByOrderByViewsDesc();
+
+    Set<Article> findTop10ByTagsInOrderByViewsDesc(Set<Tag> tags);
 }
